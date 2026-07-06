@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Oyun Hakkında — Var Mısın Yok Musun</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0f0a1f;
+    --bg-panel:#1c1340;
+    --bg-panel-light:#2a1d54;
+    --gold:#d4af37;
+    --gold-bright:#f4d35e;
+    --blue-chip:#1c7fa0;
+    --red-chip:#b8232f;
+    --cream:#f3ecd9;
+    --alert:#e8543a;
+    --win:#3fae63;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse 900px 500px at 20% -10%, rgba(212,175,55,0.10), transparent 60%),
+      radial-gradient(ellipse 900px 500px at 80% -10%, rgba(184,35,47,0.10), transparent 60%),
+      var(--bg-deep);
+    color:var(--cream);
+    font-family:'Inter',sans-serif;
+    padding:24px 16px 50px;
+  }
+  main{ max-width:640px; margin:0 auto; }
+  .logo-plaque{
+    display:inline-flex; gap:2px; flex-wrap:wrap;
+    font-family:'Oswald',sans-serif; font-weight:700;
+    font-size:clamp(18px, 5vw, 26px); letter-spacing:1px;
+    padding:8px 16px; border-radius:10px;
+    background:linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.15));
+    border:1px solid rgba(212,175,55,0.35); margin-bottom:20px;
+  }
+  .logo-plaque .var{ color:var(--gold-bright); }
+  .logo-plaque .yok{ color:#ff7a68; }
+  h1{ font-family:'Oswald',sans-serif; font-size:20px; color:var(--gold-bright); margin:28px 0 10px; }
+  h1:first-of-type{ margin-top:0; }
+  p, li{ font-size:14.5px; line-height:1.65; color:rgba(243,236,217,0.85); }
+  ul{ padding-left:20px; margin:8px 0; }
+  li{ margin-bottom:6px; }
+  .box-example{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:32px; height:26px; border-radius:5px; margin:0 2px;
+    background:linear-gradient(160deg, var(--bg-panel-light), var(--bg-panel));
+    border:1px solid rgba(212,175,55,0.4); font-family:'Oswald',sans-serif;
+    font-size:12px; color:var(--gold-bright); vertical-align:middle;
+  }
+  .chip-example{
+    display:inline-block; padding:3px 8px; border-radius:5px; font-size:12px;
+    font-family:'Oswald',sans-serif; font-weight:600; margin:0 2px; vertical-align:middle;
+  }
+  .chip-example.blue{ background:var(--blue-chip); color:#0f0a1f; }
+  .chip-example.red{ background:var(--red-chip); color:var(--cream); }
+  .round-table{ width:100%; border-collapse:collapse; margin:12px 0; font-size:13.5px; }
+  .round-table th, .round-table td{
+    border:1px solid rgba(255,255,255,0.1); padding:8px 10px; text-align:center;
+  }
+  .round-table th{ background:rgba(255,255,255,0.05); color:var(--gold-bright); font-weight:600; }
+  .back-link{ display:inline-block; margin-top:30px; }
+  .back-link a{
+    font-family:'Oswald',sans-serif; font-weight:600; letter-spacing:1px;
+    text-transform:uppercase; font-size:13px; color:#241704;
+    background:linear-gradient(180deg, var(--gold-bright), var(--gold));
+    padding:10px 20px; border-radius:8px; text-decoration:none;
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="logo-plaque"><span class="var">VAR MISIN</span><span class="yok">YOK MUSUN</span></div>
+
+  <h1>Oyunun Amacı</h1>
+  <p>
+    22 kapalı kutudan birini kendine seçersin. Kutunda ne kadar para olduğunu bilmezsin.
+    Diğer kutuları tur tur açtıkça hangi tutarların masadan çekildiği ortaya çıkar; geriye
+    kalan olasılıklara göre Banka sana bir teklif sunar. Amaç, doğru anda "Var" deyip teklifi
+    kabul etmek ya da riski göze alıp kendi kutunla yola devam etmek.
+  </p>
+
+  <h1>Para Ağacı</h1>
+  <p>Kutulara gizlenen 22 değer şunlardır:</p>
+  <p>
+    <span class="chip-example blue">₺1</span><span class="chip-example blue">₺5</span><span class="chip-example blue">₺10</span><span class="chip-example blue">₺25</span><span class="chip-example blue">₺50</span><span class="chip-example blue">₺100</span><span class="chip-example blue">₺250</span><span class="chip-example blue">₺500</span><span class="chip-example blue">₺1.000</span><span class="chip-example blue">₺5.000</span><span class="chip-example blue">₺10.000</span>
+  </p>
+  <p>
+    <span class="chip-example red">₺25.000</span><span class="chip-example red">₺50.000</span><span class="chip-example red">₺100.000</span><span class="chip-example red">₺250.000</span><span class="chip-example red">₺500.000</span><span class="chip-example red">₺750.000</span><span class="chip-example red">₺1.000.000</span><span class="chip-example red">₺2.000.000</span><span class="chip-example red">₺3.000.000</span><span class="chip-example red">₺4.000.000</span><span class="chip-example red">₺5.000.000</span>
+  </p>
+
+  <h1>Tur Yapısı</h1>
+  <p>Kendi kutunu seçtikten sonra kalan 21 kutudan sırayla açarsın. Her tur belirli sayıda kutu açmanı gerektirir:</p>
+  <table class="round-table">
+    <tr><th>Tur</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr>
+    <tr><th>Açılacak Kutu</th><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td></tr>
+  </table>
+  <p>
+    Her tur tamamlandığında Banka seni arar ve bir teklif sunar. Teklifi kabul edersen (<b>Var</b>)
+    oyun biter ve o parayı kazanırsın. Reddedersen (<b>Yokum</b>) bir sonraki tura geçersin.
+  </p>
+
+  <h1>Banka Nasıl Teklif Veriyor?</h1>
+  <p>Banka'nın teklifi rastgele değildir, gerçekçi bir mantığa dayanır:</p>
+  <ul>
+    <li><b>Beklenen değer:</b> Masada kalan (henüz açılmamış) tutarların ortalaması hesaplanır.</li>
+    <li><b>Tur katsayısı:</b> İlk turlarda teklif bu ortalamanın daha düşük bir yüzdesi (~%35) kadardır;
+      belirsizlik azaldıkça (turlar ilerledikçe) bu oran ~%82'ye kadar yükselir.</li>
+    <li><b>Risk / dağılım payı:</b> Masada hâlâ çok büyük ve çok küçük tutarlar bir aradaysa
+      (yüksek dağılım / varyans), Banka daha temkinli davranıp teklifi biraz kısar.</li>
+    <li><b>Küçük rastgelelik:</b> Gerçekçi hissettirmesi için teklife az miktarda rastgele oynama payı eklenir.</li>
+  </ul>
+
+  <h1>Son İki Kutu ve Değiştirme Hakkı</h1>
+  <p>
+    Tüm turlar bitip geriye sadece senin kutun ile bir kutu daha kaldığında, Banka bir teklif
+    vermeden önce sana bir seçim hakkı tanır: <b>mevcut kutunda kalabilir</b> ya da
+    <b>elindeki kutuyu masadaki son kutuyla değiştirebilirsin</b>. Bu, klasik formattaki gibi
+    saf bir şans oyunudur — iki kutudan hangisinde ne olduğu belli değildir.
+  </p>
+  <p>
+    Kararını verdikten sonra Banka son ve genelde en cömert teklifini yapar. Bu teklifi kabul
+    edip güvenli parayla ayrılabilir, ya da kutunu açıp içinden çıkanla yetinebilirsin.
+  </p>
+
+  <h1>Teklif Geçmişi</h1>
+  <p>
+    Oyun sırasında gelen her teklif ekranın altındaki <b>"Önceki Teklifler"</b> bölümünde saklanır.
+    Karar bekleyen bir teklif varsa, teklif kartını kapatıp para ağacını inceleyebilir, ardından
+    "Teklifi Gör" butonuyla karar ekranına geri dönebilirsin.
+  </p>
+
+  <div class="back-link"><a href="var-misin-yok-musun.html">← Oyuna Dön</a></div>
+</main>
+</body>
+</html>

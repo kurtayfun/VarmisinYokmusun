@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Var Mısın Yok Musun</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0f0a1f;
+    --bg-panel:#1c1340;
+    --bg-panel-light:#2a1d54;
+    --gold:#d4af37;
+    --gold-bright:#f4d35e;
+    --blue-chip:#1c7fa0;
+    --blue-chip-dim:#123a4a;
+    --red-chip:#b8232f;
+    --red-chip-dim:#4a1418;
+    --cream:#f3ecd9;
+    --alert:#e8543a;
+    --win:#3fae63;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse 900px 500px at 20% -10%, rgba(212,175,55,0.10), transparent 60%),
+      radial-gradient(ellipse 900px 500px at 80% -10%, rgba(184,35,47,0.10), transparent 60%),
+      radial-gradient(ellipse 1200px 800px at 50% 110%, rgba(28,127,160,0.08), transparent 60%),
+      var(--bg-deep);
+    color:var(--cream);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+    padding-bottom:40px;
+  }
+  .stagelights{
+    position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image:
+      radial-gradient(2px 2px at 10% 8%, var(--gold-bright), transparent),
+      radial-gradient(2px 2px at 25% 4%, var(--gold-bright), transparent),
+      radial-gradient(2px 2px at 40% 10%, var(--gold-bright), transparent),
+      radial-gradient(2px 2px at 60% 5%, var(--gold-bright), transparent),
+      radial-gradient(2px 2px at 75% 9%, var(--gold-bright), transparent),
+      radial-gradient(2px 2px at 90% 6%, var(--gold-bright), transparent);
+    opacity:0.5;
+    animation:twinkle 3s ease-in-out infinite alternate;
+  }
+  @keyframes twinkle{ from{opacity:0.25;} to{opacity:0.65;} }
+
+  header{
+    position:relative; z-index:1;
+    text-align:center;
+    padding:22px 16px 14px;
+  }
+  .logo-plaque{
+    display:inline-flex; gap:2px; flex-wrap:wrap; justify-content:center;
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    font-size:clamp(20px, 6vw, 34px);
+    letter-spacing:1px;
+    padding:10px 18px;
+    border-radius:10px;
+    background:linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.15));
+    border:1px solid rgba(212,175,55,0.35);
+  }
+  .logo-plaque .var{ color:var(--gold-bright); text-shadow:0 0 18px rgba(244,211,94,0.5); }
+  .logo-plaque .yok{ color:#ff7a68; text-shadow:0 0 18px rgba(232,84,58,0.5); }
+  .subtitle{
+    margin-top:6px; font-size:12px; letter-spacing:3px; text-transform:uppercase;
+    color:rgba(243,236,217,0.5);
+  }
+
+  main{
+    position:relative; z-index:1;
+    max-width:920px; margin:0 auto; padding:0 12px;
+  }
+
+  .board-wrap{
+    display:flex; gap:8px; justify-content:center; align-items:flex-start;
+    margin-top:10px;
+  }
+  .board-col{ display:flex; flex-direction:column; gap:4px; width:110px; flex-shrink:0; }
+  .board-chip{
+    padding:7px 6px; border-radius:6px; font-family:'Oswald',sans-serif;
+    font-size:12.5px; font-weight:600; text-align:center;
+    color:#0f0a1f; transition:all .35s ease;
+    position:relative; overflow:hidden;
+  }
+  .board-chip.blue{ background:var(--blue-chip); }
+  .board-chip.gold{ background:var(--gold-bright); color:#241704; }
+  .board-chip.red{ background:var(--red-chip); color:var(--cream); }
+  .board-chip.struck{
+    background:rgba(255,255,255,0.04);
+    color:rgba(243,236,217,0.25);
+    transform:scale(0.94);
+  }
+  .board-chip.struck::after{
+    content:''; position:absolute; left:4%; right:4%; top:50%; height:2px;
+    background:rgba(232,84,58,0.7); transform:translateY(-50%);
+  }
+
+  .center-stage{
+    flex:1; min-width:0;
+    display:flex; flex-direction:column; align-items:center; gap:14px;
+  }
+
+  .status-line{
+    text-align:center; font-size:13px; color:rgba(243,236,217,0.7);
+    min-height:18px; margin-top:10px;
+  }
+  .round-badge{
+    font-family:'Oswald',sans-serif; font-size:14px; letter-spacing:1.5px;
+    color:var(--gold-bright); text-transform:uppercase;
+  }
+
+  .own-case-slot{
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    margin-bottom:4px;
+  }
+  .own-case-label{ font-size:11px; letter-spacing:2px; text-transform:uppercase; color:rgba(243,236,217,0.5); }
+  .case{
+    width:58px; height:44px; border-radius:8px;
+    background:linear-gradient(160deg, var(--bg-panel-light), var(--bg-panel));
+    border:1px solid rgba(212,175,55,0.4);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Oswald',sans-serif; font-weight:600; font-size:15px;
+    color:var(--gold-bright);
+    box-shadow:0 3px 0 rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+    cursor:pointer; user-select:none;
+    transition:transform .15s ease, box-shadow .15s ease, opacity .3s ease;
+  }
+  .case.own{ width:66px; height:50px; border-color:var(--gold-bright); box-shadow:0 0 0 2px rgba(244,211,94,0.25), 0 4px 0 rgba(0,0,0,0.35); }
+  .case.opened{
+    background:rgba(255,255,255,0.03); color:rgba(243,236,217,0.3);
+    box-shadow:none; cursor:default; transform:scale(0.92);
+    border-color:rgba(255,255,255,0.08);
+  }
+  .case.opened .case-value{ display:block; }
+  .case-value{ display:none; }
+  .case:not(.opened):active{ transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,0.35); }
+  .case.disabled{ pointer-events:none; opacity:0.55; }
+
+  .case-grid{
+    display:grid; grid-template-columns:repeat(6, 1fr); gap:8px;
+    max-width:420px; width:100%;
+  }
+
+  .pick-hint{
+    text-align:center; font-size:14px; color:var(--cream); margin-bottom:2px;
+  }
+
+  .action-row{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:6px; }
+  .btn{
+    font-family:'Oswald',sans-serif; font-weight:600; letter-spacing:1px;
+    font-size:14px; padding:12px 22px; border-radius:8px; border:none;
+    cursor:pointer; text-transform:uppercase;
+    transition:transform .1s ease, filter .2s ease;
+  }
+  .btn:active{ transform:scale(0.96); }
+  .btn-gold{ background:linear-gradient(180deg, var(--gold-bright), var(--gold)); color:#241704; }
+  .btn-red{ background:linear-gradient(180deg, #ff7a68, var(--alert)); color:#2a0800; }
+  .btn-outline{ background:transparent; border:1px solid rgba(243,236,217,0.35); color:var(--cream); }
+  .btn:disabled{ opacity:0.4; pointer-events:none; }
+
+  .overlay{
+    position:fixed; inset:0; background:rgba(6,3,16,0.86); z-index:10;
+    display:flex; align-items:center; justify-content:center; padding:20px;
+    animation:fadeIn .25s ease;
+  }
+  @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+  .banker-card{
+    max-width:380px; width:100%;
+    background:linear-gradient(160deg, var(--bg-panel-light), var(--bg-panel));
+    border:1px solid rgba(212,175,55,0.4); border-radius:16px;
+    padding:26px 22px; text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+    animation:popIn .35s cubic-bezier(.2,1.4,.4,1);
+    position:relative;
+  }
+  .modal-close{
+    position:absolute; top:10px; right:10px;
+    width:30px; height:30px; border-radius:50%;
+    background:rgba(255,255,255,0.08); border:1px solid rgba(243,236,217,0.2);
+    color:var(--cream); font-size:14px; line-height:1; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .modal-close:active{ transform:scale(0.92); }
+  @keyframes popIn{ from{transform:scale(0.85); opacity:0;} to{transform:scale(1); opacity:1;} }
+  .banker-icon{
+    width:52px; height:52px; border-radius:50%; margin:0 auto 12px;
+    background:radial-gradient(circle at 35% 30%, var(--alert), #6e1c10);
+    display:flex; align-items:center; justify-content:center; font-size:24px;
+    animation:pulseGlow 1.4s ease-in-out infinite;
+  }
+  @keyframes pulseGlow{ 0%,100%{box-shadow:0 0 0 0 rgba(232,84,58,0.5);} 50%{box-shadow:0 0 0 14px rgba(232,84,58,0);} }
+  .banker-title{ font-family:'Oswald',sans-serif; letter-spacing:2px; text-transform:uppercase; font-size:13px; color:rgba(243,236,217,0.6); }
+  .banker-offer{
+    font-family:'Oswald',sans-serif; font-weight:700; font-size:clamp(28px,8vw,40px);
+    color:var(--gold-bright); margin:10px 0 4px;
+  }
+  .banker-note{ font-size:12.5px; color:rgba(243,236,217,0.55); margin-bottom:18px; line-height:1.5; }
+
+  .final-reveal{ text-align:center; }
+  .final-reveal .headline{ font-family:'Oswald',sans-serif; font-size:22px; color:var(--gold-bright); margin-bottom:8px; }
+  .final-reveal .amount{ font-family:'Oswald',sans-serif; font-size:clamp(30px,9vw,44px); font-weight:700; margin:8px 0; }
+  .final-reveal .amount.win{ color:var(--win); }
+  .final-reveal .amount.loss{ color:var(--alert); }
+  .final-reveal .compare{ font-size:13px; color:rgba(243,236,217,0.6); margin-bottom:20px; }
+
+  .swap-cases{ display:flex; gap:24px; justify-content:center; margin:16px 0; }
+  .swap-cases .case{ width:70px; height:54px; font-size:17px; }
+
+  .history-section{
+    margin-top:24px; max-width:420px; width:100%;
+    margin-left:auto; margin-right:auto;
+  }
+  .history-title{
+    font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:2px;
+    text-transform:uppercase; color:rgba(243,236,217,0.45);
+    text-align:center; margin-bottom:8px;
+  }
+  .history-item{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:8px; padding:9px 12px; border-radius:8px; margin-bottom:6px;
+    background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06);
+    font-size:12.5px;
+  }
+  .history-item .h-round{ color:rgba(243,236,217,0.55); flex-shrink:0; }
+  .history-item .h-amount{ font-family:'Oswald',sans-serif; font-weight:600; color:var(--cream); flex:1; text-align:center; }
+  .history-item .h-status{ font-size:11px; flex-shrink:0; }
+  .history-item .h-status.accepted{ color:var(--win); }
+  .history-item .h-status.continued{ color:rgba(243,236,217,0.5); }
+  .history-item.pending{
+    background:rgba(212,175,55,0.1); border-color:rgba(212,175,55,0.4);
+    animation:pulseGlow 1.8s ease-in-out infinite;
+  }
+  .history-item .h-view-btn{
+    font-family:'Oswald',sans-serif; font-size:11px; font-weight:600;
+    letter-spacing:0.5px; text-transform:uppercase;
+    background:var(--gold-bright); color:#241704; border:none;
+    border-radius:6px; padding:6px 10px; cursor:pointer; flex-shrink:0;
+  }
+
+  .final-banner{
+    text-align:center; padding:20px 16px; border-radius:14px; margin-bottom:16px;
+    background:linear-gradient(160deg, rgba(63,174,99,0.16), rgba(63,174,99,0.06));
+    border:1px solid rgba(63,174,99,0.4);
+  }
+  .final-banner-label{
+    font-family:'Oswald',sans-serif; font-size:12.5px; letter-spacing:1px;
+    text-transform:uppercase; color:rgba(243,236,217,0.7); margin-bottom:6px;
+  }
+  .final-banner-amount{
+    font-family:'Oswald',sans-serif; font-weight:700; font-size:clamp(26px,7vw,34px);
+    color:var(--win);
+  }
+
+  .about-link{ text-align:center; margin-top:20px; }
+  .about-link a{
+    color:rgba(243,236,217,0.4); font-size:12px; text-decoration:underline;
+  }
+
+  footer{ text-align:center; margin-top:26px; font-size:11px; color:rgba(243,236,217,0.3); }
+
+  .chip-short{ display:none; }
+
+  @media(max-width:700px){
+    .board-wrap{ align-items:flex-start; gap:6px; }
+    .board-col{ width:92px; }
+    .board-chip{ font-size:10.5px; padding:6px 3px; }
+    .case-grid{ grid-template-columns:repeat(3,1fr); gap:6px; max-width:170px; }
+    .case{ width:46px; height:38px; font-size:13px; }
+    .case.own{ width:52px; height:42px; }
+  }
+
+  @media(max-width:400px){
+    .board-col{ width:82px; }
+    .board-chip{ font-size:9.5px; padding:5px 2px; }
+    .case-grid{ grid-template-columns:repeat(3,1fr); gap:5px; max-width:150px; }
+    .case{ width:42px; height:36px; font-size:12px; }
+    .case.own{ width:48px; height:40px; }
+  }
+</style>
+</head>
+<body>
+<div class="stagelights"></div>
+
+<header>
+  <div class="logo-plaque"><span class="var">VAR MISIN</span><span class="yok">YOK MUSUN</span></div>
+  <div class="subtitle">Kutunu seç · Bankayla pazarlık et · Şansını sına</div>
+</header>
+
+<main>
+  <div id="own-case-area" class="own-case-slot" style="display:none;">
+    <div class="own-case-label">Senin Kutun</div>
+    <div class="case own" id="own-case"><span id="own-case-num"></span></div>
+  </div>
+  <div id="pick-hint" class="pick-hint">Kendi kutunu seçmek için aşağıdan bir numara seç</div>
+  <div id="round-status" class="status-line"></div>
+
+  <div class="board-wrap">
+    <div class="board-col" id="col-blue"></div>
+    <div class="case-grid" id="case-grid"></div>
+    <div class="board-col" id="col-red"></div>
+  </div>
+
+  <div class="action-row" id="action-row"></div>
+
+  <div class="history-section" id="history-section"></div>
+
+  <div class="about-link"><a href="oyun-hakkinda.html">Oyun Hakkında</a></div>
+</main>
+
+<div id="overlay-root"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  const VALUES = [1,5,10,25,50,100,250,500,1000,5000,10000,25000,50000,100000,250000,500000,750000,1000000,2000000,3000000,4000000,5000000];
+  const SCHEDULE = [6,5,4,3,2]; // kaç kutu açılacak, tur tur
+  const OFFER_RATIOS = [0.35,0.45,0.55,0.68,0.82];
+
+  function fmt(n){
+    return "₺" + Math.round(n).toLocaleString('tr-TR');
+  }
+
+  function fmtShort(n){
+    n = Math.round(n);
+    if(n >= 1000000){
+      const v = n/1000000;
+      return "₺" + (v % 1 === 0 ? v : v.toFixed(1)) + "M";
+    }
+    if(n >= 1000){
+      const v = n/1000;
+      return "₺" + (v % 1 === 0 ? v : v.toFixed(1)) + "K";
+    }
+    return "₺" + n;
+  }
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+
+  let state = null;
+
+  function newGame(){
+    const shuffled = shuffle(VALUES);
+    const caseValues = {};
+    for(let i=1;i<=22;i++) caseValues[i] = shuffled[i-1];
+    state = {
+      caseValues,
+      ownCase: null,
+      opened: new Set(),
+      roundIndex: 0,
+      openedThisRound: 0,
+      phase: 'pick-own',
+      lastOffer: null,
+      swapChoiceMade: false,
+      finalCases: null, // {kept, other}
+      offerHistory: [],
+      modalVisible: true
+    };
+    render();
+  }
+
+  function remainingValues(){
+    // values not yet opened (own case + all unopened others)
+    const openedVals = new Set();
+    state.opened.forEach(c => openedVals.add(state.caseValues[c]));
+    return VALUES.filter(v => !openedVals.has(v));
+  }
+
+  function stdDev(arr){
+    const avg = arr.reduce((a,b)=>a+b,0)/arr.length;
+    const variance = arr.reduce((a,b)=>a+(b-avg)*(b-avg),0)/arr.length;
+    return Math.sqrt(variance);
+  }
+
+  function calcOffer(roundIdx){
+    const rem = remainingValues();
+    const avg = rem.reduce((a,b)=>a+b,0)/rem.length;
+    const cov = stdDev(rem)/avg; // katsayı: dağılım ne kadar geniş
+    const varianceFactor = Math.max(0.6, 1 - cov*0.18);
+    const jitter = 0.95 + Math.random()*0.1;
+    let offer = avg * OFFER_RATIOS[roundIdx] * varianceFactor * jitter;
+    return Math.round(offer/10)*10;
+  }
+
+  function calcFinalOffer(){
+    const rem = remainingValues(); // exactly 2 values left
+    const avg = rem.reduce((a,b)=>a+b,0)/2;
+    const jitter = 0.92 + Math.random()*0.1;
+    return Math.round(avg*0.9*jitter/10)*10;
+  }
+
+  function render(){
+    renderBoard();
+    renderCaseGrid();
+    renderOwnCase();
+    renderStatus();
+    renderActions();
+    renderOverlay();
+    renderHistory();
+  }
+
+  function renderHistory(){
+    const el = document.getElementById('history-section');
+    if(!state.offerHistory.length){ el.innerHTML = ''; return; }
+
+    let entries = state.offerHistory;
+    let resultEntry = null;
+    if(entries.length && entries[entries.length-1].kind === 'result'){
+      resultEntry = entries[entries.length-1];
+      entries = entries.slice(0, -1);
+    }
+
+    let html = '';
+    if(resultEntry){
+      const label = resultEntry.resultType === 'own-case' ? 'Kutundan Çıkan Tutar' : 'Bankayla Anlaşılan Tutar';
+      html += `<div class="final-banner">
+        <div class="final-banner-label">🎉 Oyun Bitti — ${label}</div>
+        <div class="final-banner-amount">${fmt(resultEntry.amount)}</div>
+      </div>`;
+    }
+
+    if(entries.length){
+      const rows = entries.slice().reverse().map(entry => {
+        const roundLabel = entry.kind === 'final' ? 'Son Teklif' : `Tur ${entry.round}`;
+        if(entry.status === 'pending'){
+          return `<div class="history-item pending">
+            <span class="h-round">${roundLabel}</span>
+            <span class="h-amount">${fmt(entry.amount)}</span>
+            <button class="h-view-btn" onclick="game.openModal()">Teklifi Gör</button>
+          </div>`;
+        }
+        const statusLabel = entry.status === 'accepted' ? 'Kabul Edildi' : 'Devam Edildi';
+        const statusClass = entry.status === 'accepted' ? 'accepted' : 'continued';
+        return `<div class="history-item">
+          <span class="h-round">${roundLabel}</span>
+          <span class="h-amount">${fmt(entry.amount)}</span>
+          <span class="h-status ${statusClass}">${statusLabel}</span>
+        </div>`;
+      }).join('');
+      html += `<div class="history-title">Önceki Teklifler</div>${rows}`;
+    }
+
+    el.innerHTML = html;
+  }
+
+  function renderBoard(){
+    const blueVals = VALUES.slice(0,11);
+    const rightVals = VALUES.slice(11); // 5 altın + 6 kırmızı
+    const openedVals = new Set();
+    state.opened.forEach(c => openedVals.add(state.caseValues[c]));
+
+    const colBlue = document.getElementById('col-blue');
+    const colRed = document.getElementById('col-red');
+    colBlue.innerHTML = blueVals.map(v => chipHtml(v, 'blue', openedVals.has(v))).join('');
+    colRed.innerHTML = rightVals.map((v, idx) => {
+      const color = idx < 5 ? 'gold' : 'red';
+      return chipHtml(v, color, openedVals.has(v));
+    }).join('');
+  }
+  function chipHtml(v, color, struck){
+    return `<div class="board-chip ${color} ${struck?'struck':''}"><span class="chip-full">${fmt(v)}</span><span class="chip-short">${fmtShort(v)}</span></div>`;
+  }
+
+  function renderOwnCase(){
+    const area = document.getElementById('own-case-area');
+    if(state.ownCase){
+      area.style.display = 'flex';
+      document.getElementById('own-case-num').textContent = state.ownCase;
+    } else {
+      area.style.display = 'none';
+    }
+  }
+
+  function renderCaseGrid(){
+    const grid = document.getElementById('case-grid');
+    const hint = document.getElementById('pick-hint');
+
+    if(state.phase === 'pick-own'){
+      hint.style.display = 'block';
+      hint.textContent = 'Kendi kutunu seçmek için aşağıdan bir numara seç';
+      grid.style.display = 'grid';
+      let html = '';
+      for(let i=1;i<=22;i++){
+        html += `<div class="case" data-case="${i}" onclick="game.pickOwnCase(${i})">${i}</div>`;
+      }
+      grid.innerHTML = html;
+      return;
+    }
+
+    if(state.phase === 'playing'){
+      hint.style.display = 'none';
+      grid.style.display = 'grid';
+      let html = '';
+      for(let i=1;i<=22;i++){
+        if(i === state.ownCase) continue;
+        const isOpen = state.opened.has(i);
+        const cls = isOpen ? 'case opened' : 'case';
+        const val = isOpen ? `<span class="case-value">${fmt(state.caseValues[i])}</span>` : i;
+        const clickable = isOpen ? '' : `onclick="game.openCase(${i})"`;
+        html += `<div class="${cls}" ${clickable}>${val}</div>`;
+      }
+      grid.innerHTML = html;
+      return;
+    }
+
+    // other phases: hide grid
+    grid.style.display = 'none';
+    hint.style.display = 'none';
+  }
+
+  function renderStatus(){
+    const el = document.getElementById('round-status');
+    if(state.phase === 'pick-own'){
+      el.innerHTML = '';
+    } else if(state.phase === 'playing'){
+      const total = SCHEDULE[state.roundIndex];
+      const remainingToOpen = total - state.openedThisRound;
+      el.innerHTML = `<span class="round-badge">Tur ${state.roundIndex+1} / ${SCHEDULE.length}</span><br>Bu turda açılacak kutu: <b>${remainingToOpen}</b>`;
+    } else if(state.phase === 'swap-decision'){
+      el.innerHTML = `<span class="round-badge">Son İki Kutu</span>`;
+    } else if(state.phase === 'final-choice'){
+      el.innerHTML = `<span class="round-badge">Son Karar</span>`;
+    } else if(state.phase === 'ended'){
+      el.innerHTML = `<span class="round-badge">Oyun Bitti</span>`;
+    }
+  }
+
+  function renderActions(){
+    const row = document.getElementById('action-row');
+    row.innerHTML = '';
+    if(state.phase === 'ended'){
+      row.innerHTML = `<button class="btn btn-gold" onclick="game.restart()">Yeniden Oyna</button>`;
+    }
+  }
+
+  function renderOverlay(){
+    const root = document.getElementById('overlay-root');
+    if(state.phase === 'banker-call'){
+      if(!state.modalVisible){ root.innerHTML = ''; return; }
+      root.innerHTML = `
+        <div class="overlay">
+          <div class="banker-card">
+            <button class="modal-close" onclick="game.closeModal()">✕</button>
+            <div class="banker-icon">☎</div>
+            <div class="banker-title">Banka Arıyor</div>
+            <div class="banker-offer">${fmt(state.lastOffer)}</div>
+            <div class="banker-note">Bankanın teklifini kabul edip oyunu bitirebilir, ya da riske girip devam edebilirsin.</div>
+            <div class="action-row">
+              <button class="btn btn-gold" onclick="game.acceptOffer()">VAR — Kabul Et</button>
+              <button class="btn btn-outline" onclick="game.rejectOffer()">YOKUM — Devam Et</button>
+            </div>
+          </div>
+        </div>`;
+      return;
+    }
+
+    if(state.phase === 'swap-decision'){
+      const otherCase = getRemainingOtherCase();
+      root.innerHTML = `
+        <div class="overlay">
+          <div class="banker-card">
+            <div class="banker-title">İki Kutu Kaldı</div>
+            <div class="swap-cases">
+              <div style="text-align:center;">
+                <div class="case own" style="margin:0 auto;">${state.ownCase}</div>
+                <div style="font-size:11px;margin-top:6px;color:rgba(243,236,217,0.6);">Senin Kutun</div>
+              </div>
+              <div style="text-align:center;">
+                <div class="case" style="margin:0 auto;">${otherCase}</div>
+                <div style="font-size:11px;margin-top:6px;color:rgba(243,236,217,0.6);">Diğer Kutu</div>
+              </div>
+            </div>
+            <div class="banker-note">Kutunu değiştirmek ister misin, yoksa kalmak mı istersin?</div>
+            <div class="action-row">
+              <button class="btn btn-outline" onclick="game.swapDecision(false)">Kalmak İstiyorum</button>
+              <button class="btn btn-gold" onclick="game.swapDecision(true)">Değiştirmek İstiyorum</button>
+            </div>
+          </div>
+        </div>`;
+      return;
+    }
+
+    if(state.phase === 'final-choice'){
+      if(!state.modalVisible){ root.innerHTML = ''; return; }
+      root.innerHTML = `
+        <div class="overlay">
+          <div class="banker-card">
+            <button class="modal-close" onclick="game.closeModal()">✕</button>
+            <div class="banker-icon">☎</div>
+            <div class="banker-title">Son Teklif</div>
+            <div class="banker-offer">${fmt(state.lastOffer)}</div>
+            <div class="banker-note">Bu son teklif. Kabul edip garantili parayı alabilir ya da kutunu açıp kaderine razı olabilirsin.</div>
+            <div class="action-row">
+              <button class="btn btn-gold" onclick="game.acceptFinalOffer()">Teklifi Kabul Et</button>
+              <button class="btn btn-red" onclick="game.openFinalCase()">Kutumu Açıyorum</button>
+            </div>
+          </div>
+        </div>`;
+      return;
+    }
+
+    root.innerHTML = '';
+  }
+
+  function getRemainingOtherCase(){
+    for(let i=1;i<=22;i++){
+      if(i !== state.ownCase && !state.opened.has(i)) return i;
+    }
+    return null;
+  }
+
+  // --- Actions exposed to window ---
+  const game = {
+    pickOwnCase(num){
+      if(state.phase !== 'pick-own') return;
+      state.ownCase = num;
+      state.phase = 'playing';
+      render();
+    },
+
+    openCase(num){
+      if(state.phase !== 'playing') return;
+      if(state.opened.has(num) || num === state.ownCase) return;
+      state.opened.add(num);
+      state.openedThisRound++;
+      render();
+
+      const target = SCHEDULE[state.roundIndex];
+      if(state.openedThisRound >= target){
+        // round complete -> banka arıyor
+        setTimeout(()=>{
+          const remainingOtherCases = 21 - state.opened.size; // other cases still unopened
+          state.lastOffer = calcOffer(state.roundIndex);
+          state.phase = 'banker-call';
+          state.modalVisible = true;
+          state.offerHistory.push({ round: state.roundIndex+1, amount: state.lastOffer, status:'pending', kind:'round' });
+          if(remainingOtherCases === 1){
+            state.pendingSwap = true;
+          }
+          render();
+        }, 350);
+      }
+    },
+
+    acceptOffer(){
+      markLastHistory('accepted');
+      state.finalResult = { type:'deal', amount: state.lastOffer };
+      state.offerHistory.push({ kind:'result', amount: state.lastOffer, resultType:'deal' });
+      state.phase = 'ended';
+      render();
+    },
+
+    rejectOffer(){
+      markLastHistory('continued');
+      const goToSwap = !!state.pendingSwap;
+      state.pendingSwap = false;
+      if(goToSwap){
+        state.phase = 'swap-decision';
+      } else {
+        state.roundIndex++;
+        state.openedThisRound = 0;
+        state.phase = 'playing';
+      }
+      render();
+    },
+
+    swapDecision(shouldSwap){
+      if(shouldSwap){
+        // Kutu numaraları yer değiştirir; hiçbir değer açığa çıkmadığı için
+        // board/opened durumuna dokunmaya gerek yok.
+        state.ownCase = getRemainingOtherCase();
+      }
+      state.lastOffer = calcFinalOffer();
+      state.modalVisible = true;
+      state.offerHistory.push({ round:null, amount: state.lastOffer, status:'pending', kind:'final' });
+      state.phase = 'final-choice';
+      render();
+    },
+
+    acceptFinalOffer(){
+      markLastHistory('accepted');
+      state.finalResult = { type:'deal', amount: state.lastOffer };
+      state.offerHistory.push({ kind:'result', amount: state.lastOffer, resultType:'deal' });
+      state.phase = 'ended';
+      render();
+    },
+
+    openFinalCase(){
+      markLastHistory('continued');
+      const val = state.caseValues[state.ownCase];
+      state.finalResult = { type:'own-case', amount: val };
+      state.offerHistory.push({ kind:'result', amount: val, resultType:'own-case' });
+      state.phase = 'ended';
+      render();
+    },
+
+    closeModal(){
+      state.modalVisible = false;
+      render();
+    },
+
+    openModal(){
+      state.modalVisible = true;
+      render();
+    },
+
+    restart(){
+      newGame();
+    }
+  };
+
+  function markLastHistory(status){
+    if(state.offerHistory.length){
+      state.offerHistory[state.offerHistory.length-1].status = status;
+    }
+  }
+
+  window.game = game;
+  newGame();
+})();
+</script>
+</body>
+</html>
